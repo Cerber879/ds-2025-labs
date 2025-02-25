@@ -9,7 +9,11 @@
         <div class="col-2">Текст для оценки:</div>
         <div class="col-10">
             <textarea name="text" rows="5" cols="50"></textarea>
-            <input type="submit" />
+            <input type="submit" value="Оценить" />
         </div>
+    </form>
+
+    <form method="post" asp-page-handler="DeleteAll">
+        <button type="submit" style="position: relative; top: 20px; left: 50px;">Удалить все записи</button>
     </form>
 </div>

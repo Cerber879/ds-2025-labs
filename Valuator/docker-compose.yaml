@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+    redis:
+        container_name: redis
+        image: redis:6.2-alpine
+        restart: always
+        ports:
+            - 6379:6379
+        command: redis-server --requirepass ${REDIS_PASSWORD}
+        volumes:
+            - redis_data:/data
+        networks:
+            - valuator
+
+volumes:
+  redis_data:
+
+networks:
+  valuator:
