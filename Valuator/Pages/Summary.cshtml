@@ -4,3 +4,8 @@
 }
 <p>Оценка содержания: @Model.Rank</p>
 <p>Плагиат: @Model.Similarity</p>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+  <div class="alert alert-danger">@Model.ErrorMessage</div>
+}

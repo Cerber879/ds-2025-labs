@@ -1,29 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Valuator.Data;
 
-namespace Valuator.Pages;
-public class SummaryModel : PageModel
+namespace Valuator.Pages
 {
-    private readonly ILogger<SummaryModel> _logger;
-    private readonly IValuatorRepository _valuatorRepository;
-
-    public SummaryModel(ILogger<SummaryModel> logger, IValuatorRepository valuatorRepository)
+    public class SummaryModel : PageModel
     {
-        _logger = logger;
-        _valuatorRepository = valuatorRepository;
-    }
+        private readonly ILogger<SummaryModel> _logger;
+        private readonly IRankStorageService _rankStorageService;
 
-    public double Rank { get; set; }
-    public double Similarity { get; set; }
+        public SummaryModel(
+            ILogger<SummaryModel> logger,
+            IRankStorageService rankStorageService)
+        {
+            _logger = logger;
+            _rankStorageService = rankStorageService;
+        }
 
-    public void OnGet(string id)
-    {
-        _logger.LogDebug(id);
+        public string? ErrorMessage { get; private set; }
 
-        string rankKey = "RANK-" + id;
-        string similarityKey = "SIMILARITY-" + id;
+        public double Rank { get; set; }
+        public double Similarity { get; set; }
 
-        Rank = _valuatorRepository.GetRank(rankKey);
-        Similarity = _valuatorRepository.GetSimilarity(similarityKey);
+        public void OnGet(string id)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    ErrorMessage = "Некорректный идентификатор.";
+                    return;
+                }
+
+                _logger.LogDebug(id);
+
+                string rankKey = "RANK-" + id;
+                string similarityKey = "SIMILARITY-" + id;
+
+                Rank = _rankStorageService.GetRank(rankKey);
+                Similarity = _rankStorageService.GetSimilarity(similarityKey);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении данных.");
+                ErrorMessage = "Произошла ошибка при получении данных. Попробуйте ещё раз.";
+            }
+        }
     }
 }

@@ -16,11 +16,9 @@ public class Program
 
         if (string.IsNullOrEmpty(redisPassword))
         {
-            // Обработка случая, если переменная окружения не установлена
             throw new InvalidOperationException("REDIS_PASSWORD не найдена в переменных окружения.");
         }
 
-        // Создание конфигурации для подключения с паролем
         var configOptions = new ConfigurationOptions
         {
             EndPoints = { "127.0.0.1:6379" },
@@ -28,8 +26,10 @@ public class Program
             Ssl = false
         };
 
-        // Добавить Redis с конфигурацией
         builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configOptions));
+
+        builder.Services.AddScoped<ITextStorageService, TextStorageService>();
+        builder.Services.AddScoped<IRankStorageService, RankStorageService>();
         builder.Services.AddScoped<IValuatorRepository, ValuatorRepository>();
 
         // Add services to the container.

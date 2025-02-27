@@ -13,6 +13,11 @@
         </div>
     </form>
 
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
     <form method="post" asp-page-handler="DeleteAll">
         <button type="submit" style="position: relative; top: 20px; left: 50px;">Удалить все записи</button>
     </form>
