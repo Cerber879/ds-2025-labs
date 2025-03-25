@@ -12,17 +12,9 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        string? redisPassword = Environment.GetEnvironmentVariable("REDIS_PASSWORD");
-
-        if (string.IsNullOrEmpty(redisPassword))
-        {
-            throw new InvalidOperationException("REDIS_PASSWORD не найдена в переменных окружения.");
-        }
-
         var configOptions = new ConfigurationOptions
         {
             EndPoints = { "127.0.0.1:6379" },
-            Password = redisPassword,
             Ssl = false
         };
 

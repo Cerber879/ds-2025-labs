@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Valuator.Data;
+using Valuator.Models;
 
 namespace Valuator.Pages
 {
