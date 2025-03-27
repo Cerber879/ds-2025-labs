@@ -1,15 +1,20 @@
 using StackExchange.Redis;
 using System;
+using Valuator.Data;
 
 namespace Valuator.Data
 {
   public class RankStorageService : IRankStorageService
   {
     private readonly IConnectionMultiplexer _redis;
+    private readonly IValuatorRepository _valuatorRepository;
 
-    public RankStorageService(IConnectionMultiplexer redis)
+    public RankStorageService(
+      IConnectionMultiplexer redis,
+      IValuatorRepository valuatorRepository)
     {
       _redis = redis;
+      _valuatorRepository = valuatorRepository;
     }
 
     public bool SaveRank(string rankKey, double rank)
@@ -24,10 +29,7 @@ namespace Valuator.Data
         throw new ArgumentException("Ранг должен быть от 0 до 1", nameof(rank));
       }
 
-      var db = _redis.GetDatabase();
-      db.StringSet(rankKey, rank);
-
-      return true;
+      return _valuatorRepository.SaveRank(rankKey, rank);
     }
 
     public bool SaveSimilarity(string similarityKey, double similarity)
@@ -42,22 +44,17 @@ namespace Valuator.Data
         throw new ArgumentException("Значение сходства должно быть 0 или 1", nameof(similarity));
       }
 
-      var db = _redis.GetDatabase();
-      db.StringSet(similarityKey, similarity);
-
-      return true;
+      return _valuatorRepository.SaveSimilarity(similarityKey, similarity);
     }
 
     public double GetRank(string rankKey)
     {
-      var db = _redis.GetDatabase();
-      return db.StringGet(rankKey).IsNullOrEmpty ? 0 : (double)db.StringGet(rankKey);
+      return _valuatorRepository.GetRank(rankKey);
     }
 
     public double GetSimilarity(string similarityKey)
     {
-      var db = _redis.GetDatabase();
-      return db.StringGet(similarityKey).IsNullOrEmpty ? 0 : (double)db.StringGet(similarityKey);
+      return _valuatorRepository.GetSimilarity(similarityKey);
     }
   }
 }

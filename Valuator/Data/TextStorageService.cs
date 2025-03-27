@@ -1,16 +1,23 @@
 using StackExchange.Redis;
 using System;
 using System.Linq;
+using Valuator.Data;
 
 namespace Valuator.Data
 {
   public class TextStorageService : ITextStorageService
   {
     private readonly IConnectionMultiplexer _redis;
+    private readonly IValuatorRepository _valuatorRepository;
 
-    public TextStorageService(IConnectionMultiplexer redis)
+
+    public TextStorageService(
+      IConnectionMultiplexer redis,
+      IValuatorRepository valuatorRepository)
     {
       _redis = redis;
+      _valuatorRepository = valuatorRepository;
+
     }
 
     public bool SaveText(string textKey, string text)
@@ -25,10 +32,7 @@ namespace Valuator.Data
         throw new ArgumentException("Текст не может быть пустым", nameof(text));
       }
 
-      var db = _redis.GetDatabase();
-      db.StringSet(textKey, text);
-
-      return true;
+      return _valuatorRepository.SaveText(textKey, text);
     }
 
     public bool CheckForPlagiarism(string text)
@@ -38,19 +42,7 @@ namespace Valuator.Data
         throw new ArgumentException("Текст не может быть пустым", nameof(text));
       }
 
-      var db = _redis.GetDatabase();
-      var server = _redis.GetServer(_redis.GetEndPoints().First());
-      var keys = server.Keys(pattern: "TEXT-*").ToList();
-
-      foreach (var key in keys)
-      {
-        var storedText = db.StringGet(key);
-        if (!storedText.IsNullOrEmpty && storedText == text)
-        {
-          return true;
-        }
-      }
-      return false;
+      return _valuatorRepository.CheckForPlagiarism(text);
     }
   }
 }
