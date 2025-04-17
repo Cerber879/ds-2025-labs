@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Valuator.Data;
 using Valuator.Models;
+using Valuator.RabbitMQ;
 
 namespace Valuator.Pages
 {
@@ -40,7 +41,7 @@ namespace Valuator.Pages
             return RedirectToPage();
         }
 
-        public IActionResult OnPost(string text)
+        public async Task<IActionResult> OnPost(string text)
         {
             try
             {
@@ -54,10 +55,6 @@ namespace Valuator.Pages
 
                 string id = Guid.NewGuid().ToString();
 
-                string rankKey = "RANK-" + id;
-                double rank = CalculateRank(text);
-                _rankStorageService.SaveRank(rankKey, rank);
-
                 string similarityKey = "SIMILARITY-" + id;
                 bool isDuplicate = _textStorageService.CheckForPlagiarism(text);
                 double similarity = isDuplicate ? 1 : 0;
@@ -65,6 +62,8 @@ namespace Valuator.Pages
 
                 string textKey = "TEXT-" + id;
                 _textStorageService.SaveText(textKey, text);
+
+                await RabbitMQProducer.SendIdAsync(id);
 
                 return Redirect($"summary?id={id}");
             }
@@ -74,14 +73,6 @@ namespace Valuator.Pages
                 ErrorMessage = "Произошла ошибка при обработке текста. Попробуйте ещё раз.";
                 return Page();
             }
-        }
-
-        private double CalculateRank(string text)
-        {
-            int nonAlphabeticCount = text.Count(c => !Char.IsLetter(c));
-            int totalCount = text.Length;
-
-            return totalCount > 0 ? (double)nonAlphabeticCount / totalCount : 0;
         }
     }
 }

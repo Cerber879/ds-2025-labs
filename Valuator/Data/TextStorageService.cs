@@ -17,7 +17,6 @@ namespace Valuator.Data
     {
       _redis = redis;
       _valuatorRepository = valuatorRepository;
-
     }
 
     public bool SaveText(string textKey, string text)
@@ -34,6 +33,8 @@ namespace Valuator.Data
 
       return _valuatorRepository.SaveText(textKey, text);
     }
+
+    public string GetText(string textKey) => _valuatorRepository.GetText(textKey);
 
     public bool CheckForPlagiarism(string text)
     {

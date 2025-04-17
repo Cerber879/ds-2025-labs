@@ -64,6 +64,12 @@ namespace Valuator.Data
       return true;
     }
 
+    public string GetText(string textKey)
+    {
+      var db = _redis.GetDatabase();
+      return db.StringGet(textKey).IsNullOrEmpty ? "" : (string)db.StringGet(textKey);
+    }
+
     public bool CheckForPlagiarism(string text)
     {
       var db = _redis.GetDatabase();

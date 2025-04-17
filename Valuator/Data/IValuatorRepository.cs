@@ -10,6 +10,8 @@ namespace Valuator.Data
     double GetSimilarity(string similarityKey);
 
     bool SaveText(string textKey, string text);
+    string GetText(string textKey);
+
     bool CheckForPlagiarism(string text);
   }
 }

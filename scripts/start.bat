@@ -8,13 +8,30 @@ echo Starting Valuator on port 5002...
 start /B dotnet run --urls "http://0.0.0.0:5002"
 echo Valuator (port 5002) started.
 
-echo Starting Nginx using docker-compose...
+echo Starting Redis using docker-compose...
 docker-compose up -d
 
-echo Starting Redis using docker-compose...
+echo Starting Nginx using docker-compose...
 cd ..\nginx\conf
+docker-compose up -d
+
+echo Starting RabbitMQ using docker-compose...
+cd ..\..\Valuator\RabbitMQ
 docker-compose up -d 
 
-cd ..\..\scripts
+echo Waiting for RabbitMQ to start...
+:wait_rabbitmq
+timeout /t 2 /nobreak >nul
+curl -s http://localhost:15672 >nul 2>&1
+if %errorlevel% neq 0 goto wait_rabbitmq
+
+echo RabbitMQ is ready.
+
+echo Starting RankCalculator...
+cd ..\..\RankCalculator
+start /B dotnet run
+echo RankCalculator started.
+
+cd ..\scripts
 
 echo All components successfully started.

@@ -26,6 +26,19 @@ cd ..\..\Valuator
 docker-compose down
 echo Redis stopped.
 
+echo Stopping RabbitMQ container...
+docker stop rabbitmq
+docker rm rabbitmq
+echo RabbitMQ stopped.
+
+echo Stopping RankCalculator...
+echo Searching for RankCalculator process...
+for /F "tokens=2" %%A in ('tasklist ^| find "RankCalculator"') do (
+    echo Stopping RankCalculator with PID: %%A...
+    taskkill /PID %%A /F > nul 2>&1
+)
+echo RankCalculator stopped.
+
 cd ..\scripts
 
 echo All components successfully stopped.
