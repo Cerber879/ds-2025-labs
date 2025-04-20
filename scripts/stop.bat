@@ -22,7 +22,7 @@ docker-compose down
 echo Nginx stopped.
 
 echo Stopping Redis using docker-compose...
-cd ..\..\Valuator
+cd ..\..\InfrastructureRedis
 docker-compose down
 echo Redis stopped.
 

@@ -2,21 +2,19 @@ using StackExchange.Redis;
 using System;
 using System.Linq;
 using Valuator.Data;
+using InfrastructureRedis;
 
 namespace Valuator.Data
 {
   public class TextStorageService : ITextStorageService
   {
-    private readonly IConnectionMultiplexer _redis;
-    private readonly IValuatorRepository _valuatorRepository;
+    private readonly IRedisRepository _redisRepository;
 
 
     public TextStorageService(
-      IConnectionMultiplexer redis,
-      IValuatorRepository valuatorRepository)
+      IRedisRepository redisRepository)
     {
-      _redis = redis;
-      _valuatorRepository = valuatorRepository;
+      _redisRepository = redisRepository;
     }
 
     public bool SaveText(string textKey, string text)
@@ -31,10 +29,8 @@ namespace Valuator.Data
         throw new ArgumentException("Текст не может быть пустым", nameof(text));
       }
 
-      return _valuatorRepository.SaveText(textKey, text);
+      return _redisRepository.SaveStringValue(textKey, text);
     }
-
-    public string GetText(string textKey) => _valuatorRepository.GetText(textKey);
 
     public bool CheckForPlagiarism(string text)
     {
@@ -43,7 +39,7 @@ namespace Valuator.Data
         throw new ArgumentException("Текст не может быть пустым", nameof(text));
       }
 
-      return _valuatorRepository.CheckForPlagiarism(text);
+      return _redisRepository.CheckForPlagiarism(text);
     }
   }
 }

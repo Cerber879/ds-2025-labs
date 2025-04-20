@@ -1,6 +1,7 @@
 using StackExchange.Redis;
 using Valuator.Data;
 using DotNetEnv;
+using InfrastructureRedis;
 
 namespace Valuator;
 
@@ -22,7 +23,8 @@ public class Program
 
         builder.Services.AddScoped<ITextStorageService, TextStorageService>();
         builder.Services.AddScoped<IRankStorageService, RankStorageService>();
-        builder.Services.AddScoped<IValuatorRepository, ValuatorRepository>();
+        builder.Services.AddScoped<ISimilarityStorageService, SimilarityStorageService>();
+        builder.Services.AddScoped<IRedisRepository, RedisRepository>();
 
         // Add services to the container.
         builder.Services.AddRazorPages();

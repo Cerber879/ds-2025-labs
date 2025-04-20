@@ -1,7 +1,7 @@
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Valuator.Data;
+using RankCalculator.Services;
 
 namespace Consumer;
 
@@ -56,6 +56,7 @@ public class RankCalculator
         string rankKey = "RANK-" + id;
         double rank = CalculateRank(text);
         _rankStorageService.SaveRank(rankKey, rank);
+
         await _channel.BasicAckAsync(eventArgs.DeliveryTag, false);
     }
 

@@ -9,6 +9,7 @@ start /B dotnet run --urls "http://0.0.0.0:5002"
 echo Valuator (port 5002) started.
 
 echo Starting Redis using docker-compose...
+cd ..\InfrastructureRedis
 docker-compose up -d
 
 echo Starting Nginx using docker-compose...
