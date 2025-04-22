@@ -1,5 +1,6 @@
 using System.Text;
 using RabbitMQ.Client;
+using System.Text.Json;
 
 namespace Valuator.RabbitMQ;
 
@@ -46,4 +47,20 @@ public static class RabbitMQProducer
 
         await connection.CloseAsync();
     }
+
+    public static async Task PublishSimilarityCalculatedEvent(string id, double similarity)
+    {
+        var factory = new ConnectionFactory() { HostName = "localhost" };
+        await using var connection = await factory.CreateConnectionAsync();
+        await using var channel = await connection.CreateChannelAsync();
+
+        var exchangeName = "events";
+        await channel.ExchangeDeclareAsync(exchange: exchangeName, type: ExchangeType.Fanout);
+
+        var message = JsonSerializer.Serialize(new { Event = "SimilarityCalculated", Id = id, Similarity = similarity });
+        var body = Encoding.UTF8.GetBytes(message);
+
+        await channel.BasicPublishAsync(exchange: exchangeName, routingKey: "", body: body);
+    }
+
 }

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Valuator.Data;
-using Valuator.Models;
 using Valuator.RabbitMQ;
 using InfrastructureRedis;
 
@@ -65,6 +64,7 @@ namespace Valuator.Pages
                 _textStorageService.SaveText(textKey, text);
 
                 await RabbitMQProducer.SendIdAsync(id);
+                await RabbitMQProducer.PublishSimilarityCalculatedEvent(id, similarity);
 
                 return Redirect($"summary?id={id}");
             }

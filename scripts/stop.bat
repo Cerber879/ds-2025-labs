@@ -39,6 +39,22 @@ for /F "tokens=2" %%A in ('tasklist ^| find "RankCalculator"') do (
 )
 echo RankCalculator stopped.
 
+echo Stopping EventsLogger instance 1...
+echo Searching for EventsLogger instance 1 process...
+for /F "tokens=2" %%A in ('tasklist ^| find "EventsLogger"') do (
+    echo Stopping EventsLogger instance 1 with PID: %%A...
+    taskkill /PID %%A /F > nul 2>&1
+)
+echo EventsLogger instance 1 stopped.
+
+echo Stopping EventsLogger instance 2...
+echo Searching for EventsLogger instance 2 process...
+for /F "tokens=2" %%A in ('tasklist ^| find "EventsLogger"') do (
+    echo Stopping EventsLogger instance 2 with PID: %%A...
+    taskkill /PID %%A /F > nul 2>&1
+)
+echo EventsLogger instance 2 stopped.
+
 cd ..\scripts
 
 echo All components successfully stopped.

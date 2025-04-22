@@ -1,0 +1,5 @@
+EventsLogger is listening...
+[Event] Type: RankCalculated, Id: 4118463d-d6ac-4269-96c6-24e044a47d59
+Rank: 0,25
+[Event] Type: SimilarityCalculated, Id: 4118463d-d6ac-4269-96c6-24e044a47d59
+Similarity: 0

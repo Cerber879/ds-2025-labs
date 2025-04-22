@@ -33,6 +33,15 @@ cd ..\..\RankCalculator
 start /B dotnet run
 echo RankCalculator started.
 
+echo Starting EventsLogger instance 1...
+cd ..\EventsLogger
+start /B dotnet run > ..\EventsLogger\logs\eventslogger1.log 2>&1
+echo EventsLogger instance 1 started.
+
+echo Starting EventsLogger instance 2...
+start /B dotnet run > ..\EventsLogger\logs\eventslogger2.log 2>&1
+echo EventsLogger instance 2 started.
+
 cd ..\scripts
 
 echo All components successfully started.
