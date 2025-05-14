@@ -31,6 +31,7 @@ echo RabbitMQ is ready.
 echo Starting RankCalculator...
 cd ..\..\RankCalculator
 start /B dotnet run
+start /B dotnet run
 echo RankCalculator started.
 
 echo Starting EventsLogger instance 1...
